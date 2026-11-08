@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Project Udyam Digital — Privacy & Security Architecture Note</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 8.5mm 10.5mm 8.5mm 10.5mm;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    font-size: 8.35pt;
+    line-height: 1.34;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Header Section */
+  .header {
+    border-bottom: 2.5px solid #ED1C24;
+    padding-bottom: 5px;
+    margin-bottom: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header-left {
+    flex: 1;
+  }
+  .brand-badge {
+    display: inline-block;
+    background: #ED1C24;
+    color: #ffffff;
+    font-size: 6.8pt;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-bottom: 3px;
+  }
+  .doc-title {
+    font-size: 14pt;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+  }
+  .doc-subtitle {
+    font-size: 8pt;
+    color: #475569;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+  .header-right {
+    text-align: right;
+    font-size: 7.2pt;
+    color: #64748b;
+    line-height: 1.3;
+  }
+  .header-right strong {
+    color: #0f172a;
+  }
+  .status-pill {
+    display: inline-block;
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    padding: 1.5px 6px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 6.6pt;
+    margin-top: 2px;
+  }
+
+  /* Executive Summary Box */
+  .exec-banner {
+    background: #f8fafc;
+    border-left: 3.5px solid #ED1C24;
+    border-radius: 0 4px 4px 0;
+    padding: 6px 9px;
+    margin-bottom: 7px;
+    font-size: 7.9pt;
+    color: #334155;
+    line-height: 1.36;
+  }
+  .exec-banner strong {
+    color: #0f172a;
+  }
+
+  /* Visual Data Flow Perimeter Strip */
+  .flow-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 4px 7px;
+    margin-bottom: 7px;
+    gap: 4px;
+  }
+  .flow-step {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2.5px 5px;
+    text-align: center;
+  }
+  .flow-step.active {
+    border-color: #ED1C24;
+    background: #fff5f5;
+  }
+  .flow-title {
+    font-size: 6.6pt;
+    font-weight: 800;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .flow-step.active .flow-title {
+    color: #ED1C24;
+  }
+  .flow-sub {
+    font-size: 5.7pt;
+    color: #64748b;
+    line-height: 1.1;
+    margin-top: 1px;
+  }
+  .flow-arrow {
+    color: #94a3b8;
+    font-size: 8pt;
+    font-weight: bold;
+    user-select: none;
+  }
+
+  /* Two Column Layout */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-bottom: 7px;
+  }
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 6px 8px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .card-num {
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 6.8pt;
+    font-weight: 800;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 8.6pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .card-p {
+    font-size: 7.6pt;
+    color: #334155;
+    line-height: 1.32;
+    margin-bottom: 4px;
+  }
+  .card-list {
+    list-style: none;
+    padding: 0;
+  }
+  .card-list li {
+    position: relative;
+    padding-left: 10px;
+    margin-bottom: 3px;
+    font-size: 7.4pt;
+    color: #334155;
+    line-height: 1.3;
+  }
+  .card-list li::before {
+    content: "•";
+    position: absolute;
+    left: 2px;
+    color: #ED1C24;
+    font-weight: bold;
+    font-size: 8.5pt;
+    line-height: 1;
+  }
+  .card-list li strong {
+    color: #0f172a;
+  }
+
+  /* Table styling */
+  .mask-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+    font-size: 6.9pt;
+  }
+  .mask-table th {
+    background: #f1f5f9;
+    color: #475569;
+    text-align: left;
+    padding: 3px 4px;
+    font-weight: 700;
+    border: 1px solid #e2e8f0;
+    text-transform: uppercase;
+    font-size: 6pt;
+    letter-spacing: 0.3px;
+  }
+  .mask-table td {
+    padding: 2.5px 4px;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: middle;
+  }
+  .code-token {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-size: 6.3pt;
+    color: #0f172a;
+  }
+  .mask-token {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-size: 6.3pt;
+    font-weight: 600;
+  }
+
+  /* Security & Infrastructure Strip */
+  .infra-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 7px;
+  }
+  .infra-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 5px 6px;
+  }
+  .infra-title {
+    font-size: 7.3pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .infra-text {
+    font-size: 6.8pt;
+    color: #475569;
+    line-height: 1.26;
+  }
+
+  /* Footer & Governance Box */
+  .footer-box {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 6.8pt;
+    color: #64748b;
+  }
+  .gov-badge {
+    color: #047857;
+    font-weight: 700;
+  }
+  .dpo-note {
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="brand-badge">Airtel SYNC Hackathon 2026 • Enterprise Track A</div>
+      <h1 class="doc-title">Project Udyam Digital: Data Privacy & Security Charter</h1>
+      <p class="doc-subtitle">Architectural Design Choices for DPDP Act 2023 & Telecom Regulatory Compliance</p>
+    </div>
+    <div class="header-right">
+      <div><strong>Classification:</strong> Hackathon Submission Pack (1-Page Brief)</div>
+      <div><strong>Statutory Basis:</strong> DPDP Act 2023 & DoT Unified License</div>
+      <div class="status-pill">✓ Privacy-by-Design Verified</div>
+    </div>
+  </header>
+
+  <!-- Executive Summary -->
+  <div class="exec-banner">
+    <strong>Executive Design Rationale:</strong> Project Udyam Digital re-engineers the legacy 17.6-day SMB acquisition cycle into an automated, self-service digital onboarding journey. Because telecom Customer Application Forms (CAF) process sensitive business identities, the architecture is founded on <em>Privacy-by-Design and Default</em> principles compliant with the <strong>Digital Personal Data Protection Act, 2023 (DPDP Act)</strong> and <strong>DoT License Conditions</strong>. Collection is strictly minimized, consent is explicit and unbundled, PII is masked across all UI views and observability logs, and data retention is governed by statutory lifecycles.
+  </div>
+
+  <!-- Visual End-to-End Privacy Perimeter Strip -->
+  <div class="flow-strip">
+    <div class="flow-step">
+      <div class="flow-title">1. Advisor Chat</div>
+      <div class="flow-sub">High-level profiling only; zero PII ingested</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step active">
+      <div class="flow-title">2. Granular Consent</div>
+      <div class="flow-sub">Unbundled affirmative opt-in with SHA-256 hash</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-title">3. Smart KYC Lookup</div>
+      <div class="flow-sub">Ephemeral mock registry queries; zero doc hoarding</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-title">4. Tokenized Storage</div>
+      <div class="flow-sub">AES-256-GCM + Salted masks in UI & traces</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-title">5. Statutory Purge</div>
+      <div class="flow-sub">5-yr DoT retention, then auto-zero-fill purge</div>
+    </div>
+  </div>
+
+  <!-- Main 4-Pillar Grid -->
+  <div class="main-grid">
+
+    <!-- Pillar 1: Purpose Limitation & Data Minimization -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">1</span>
+        <h2 class="card-title">Purpose Limitation & Minimization (DPDP §5)</h2>
+      </div>
+      <p class="card-p">
+        Traditional enterprise telecom sales demand paper photocopies of bank statements, utility bills, and personal identity cards. Udyam Digital eliminates data hoarding:
+      </p>
+      <ul class="card-list">
+        <li><strong>Stateless Registry Lookups:</strong> Verification connects to national GSTIN (3,534 mock records) and Udyam (2,723 mock records) registries via stateless API lookups. Only the verified status, entity trade name, and validation token are kept; raw query payloads are immediately discarded.</li>
+        <li><strong>No Banking Credential Exposure:</strong> Recurring auto-pay mandates use tokenized NPCI / e-NACH handles. Zero bank account numbers or debit cards are stored on platform servers.</li>
+        <li><strong>Static Postal Geometry Only:</strong> Feasibility calculation relies strictly on user-supplied premises PIN codes and shop numbers. Persistent GPS or mobile device network tracking is strictly prohibited.</li>
+        <li><strong>Zero Data Monetization:</strong> Enterprise records are ring-fenced for connectivity provisioning; cross-selling to 3rd-party advertisers or data brokers is programmatically barred.</li>
+      </ul>
+    </div>
+
+    <!-- Pillar 2: Granular Consent & Verifiable Audit Trail -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">2</span>
+        <h2 class="card-title">Granular Consent & Verifiable Audit (DPDP §6)</h2>
+      </div>
+      <p class="card-p">
+        Per Section 6 of the DPDP Act 2023, consent must be <strong>free, specific, informed, unconditional, and unambiguous</strong> with verifiable proof:
+      </p>
+      <ul class="card-list">
+        <li><strong>Affirmative Pre-KYC Checkpoint:</strong> Before uploading documents or triggering automated registry lookup, users encounter an unbundled consent screen detailing purpose, data items collected, and retention boundaries. No hidden terms or pre-ticked boxes.</li>
+        <li><strong>Cryptographic SHA-256 Proof:</strong> Each consent submission generates an immutable digital token: <code>{timestamp_utc, principal_id, ip_hash, consent_version, purpose}</code> hashed with SHA-256 for non-repudiation during regulatory audits.</li>
+        <li><strong>Unbundled Channels:</strong> Statutory e-KYC consent is completely decoupled from optional promotional communications, WhatsApp alerts, and partner SaaS offers.</li>
+        <li><strong>Unilateral Right to Revoke:</strong> Signatories can retract secondary marketing consent anytime via the self-service Order Tracker without interrupting primary telecom services.</li>
+      </ul>
+    </div>
+
+    <!-- Pillar 3: Identifier Masking in Logs & UI -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">3</span>
+        <h2 class="card-title">Dynamic Identifier Masking & Zero-Trust RBAC</h2>
+      </div>
+      <p class="card-p">
+        To prevent accidental PII leakage across browser storage, partner portals, and telemetry logging pipelines, all direct identifiers are dynamically salted and masked:
+      </p>
+      <table class="mask-table">
+        <thead>
+          <tr>
+            <th>Identifier</th>
+            <th>Raw Input Format</th>
+            <th>UI Presentation Mask</th>
+            <th>Telemetry / Log Trace</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>GSTIN</strong></td>
+            <td><span class="code-token">27AABCA1234F1Z5</span></td>
+            <td><span class="mask-token">27AAB*****1Z5</span></td>
+            <td><span class="mask-token">GST_HASH_8F92</span></td>
+          </tr>
+          <tr>
+            <td><strong>Aadhaar VID</strong></td>
+            <td><span class="code-token">9182 3847 1928 4719</span></td>
+            <td><span class="mask-token">XXXX-XXXX-4719</span></td>
+            <td><span class="mask-token">[REDACTED_UIDAI_TOKEN]</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mobile No.</strong></td>
+            <td><span class="code-token">+91 98104 58210</span></td>
+            <td><span class="mask-token">+91 9810X-XXXX</span></td>
+            <td><span class="mask-token">TEL_MASK_981XX</span></td>
+          </tr>
+          <tr>
+            <td><strong>PAN Card</strong></td>
+            <td><span class="code-token">AABCA1234F</span></td>
+            <td><span class="mask-token">AAB****34F</span></td>
+            <td><span class="mask-token">PAN_TOKEN_E91A</span></td>
+          </tr>
+          <tr>
+            <td><strong>Udyam No.</strong></td>
+            <td><span class="code-token">UDYAM-MH-00-0012345</span></td>
+            <td><span class="mask-token">UDYAM-MH-**-****345</span></td>
+            <td><span class="mask-token">UDYAM_TOKEN_4F2C</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="card-p" style="margin-top: 3px; font-size: 7.1pt; color: #64748b;">
+        <strong>Zero Plaintext Storage:</strong> Field reps and support agents see masked records only. Sensitive unmasking requires dual-custody authorization keys inside secure enclaves.
+      </p>
+    </div>
+
+    <!-- Pillar 4: Statutory Retention vs Erasure -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">4</span>
+        <h2 class="card-title">Statutory Retention vs. Erasure (DPDP §8(7) & DoT)</h2>
+      </div>
+      <p class="card-p">
+        While DPDP Act Section 8 requires prompt erasure, Section 8(7) protects sectoral statutory compliance. Airtel reconciles privacy with telecom licensing mandates:
+      </p>
+      <ul class="card-list">
+        <li><strong>Mandatory 5-Year CAF Retention:</strong> Under <strong>DoT Unified Access License Condition 39.20</strong>, customer verification files (CAF, e-KYC records, and authorized signatory tokens) are legally mandated to be retained for exactly 5 years following service disconnection.</li>
+        <li><strong>2-Year Call Detail Records (CDR):</strong> Airtel IQ Cloud PBX and VoIP logs are retained for 2 years for statutory security audits, stored in write-once audit storage.</li>
+        <li><strong>Automated Cryptographic Purge:</strong> When the statutory retention period lapses, an automated zero-fill purge engine permanently destroys archived records and issues a deletion receipt.</li>
+        <li><strong>Dropped Lead Sanitization:</strong> Incomplete lead applications abandoned during early assessment are permanently wiped from sales caches after 90 days.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Defense-in-Depth Security Architecture Strip -->
+  <div class="infra-grid">
+    <div class="infra-card">
+      <div class="infra-title">🔒 Transit & Rest Cryptography</div>
+      <div class="infra-text">
+        <strong>TLS 1.3 Strict:</strong> Enforced ECDHE forward secrecy and HSTS for all web/API traffic.<br>
+        <strong>AES-256-GCM:</strong> Authenticated volume & database encryption with automated 90-day HSM key rotation.
+      </div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-title">🇮🇳 Sovereign Cloud Hosting</div>
+      <div class="infra-text">
+        <strong>100% Domestic Residency:</strong> Hosted on Tier-IV <em>Nxtra by Airtel</em> sovereign data centers (Mumbai, Pune, Manesar). Zero cross-border data transfer outside the Union of India.
+      </div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-title">🛡️ Data Principal Rights</div>
+      <div class="infra-text">
+        <strong>Section 11-13 Rights:</strong> Self-service portal tools for Right to Access summary, Right to Correction/Update, Right to Grievance Redressal (15-day SLA), and Signatory Nomination.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer & DPO Governance -->
+  <footer class="footer-box">
+    <div>
+      <span class="gov-badge">✓ Statutory Assurance:</span> Designed in alignment with the Data Protection Board of India (DPBI) rules and CERT-In cybersecurity directives.
+    </div>
+    <div class="dpo-note">
+      <strong>Data Protection Officer:</strong> dpo@airtel.com • <em>Bharti Airtel Limited, Airtel Centre, Gurugram</em>
+    </div>
+  </footer>
+
+</body>
+</html>
