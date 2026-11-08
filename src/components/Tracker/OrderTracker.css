@@ -1,0 +1,917 @@
+/* ==========================================================================
+   OrderTracker.css - Airtel Accel Business / Project Udyam Digital
+   Theme: Premium Dark-Mode Glassmorphism with Airtel Red (#ED1C24) Accents
+   ========================================================================== */
+
+.tracker-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #e2e8f0;
+}
+
+/* Header & Meta */
+.tracker-header {
+  margin-bottom: 2rem;
+}
+
+.tracker-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tracker-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(237, 28, 36, 0.12);
+  color: #ff4d4f;
+  border: 1px solid rgba(237, 28, 36, 0.3);
+}
+
+.tracker-badge.live-dot::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: liveBlink 1.8s infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.tracker-id-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tracker-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tracker-title-gradient {
+  background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 70%, #ff4d4f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tracker-subtitle {
+  font-size: 1rem;
+  color: #94a3b8;
+  margin: 0;
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+/* Overall Progress Card */
+.tracker-progress-card {
+  background: rgba(18, 22, 32, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.tracker-progress-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ED1C24, #ff7875, #22c55e);
+}
+
+.tracker-progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tracker-progress-info h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  margin: 0 0 0.35rem 0;
+}
+
+.tracker-progress-current-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tracker-eta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(237, 28, 36, 0.1);
+  border: 1px solid rgba(237, 28, 36, 0.35);
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tracker-eta-pill strong {
+  color: #ff4d4f;
+}
+
+.tracker-bar-wrap {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.tracker-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e 0%, #ED1C24 80%, #ff7875 100%);
+  border-radius: 9999px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.tracker-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shineWave 2.5s infinite;
+}
+
+@keyframes shineWave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.tracker-pills-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.tracker-pill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.tracker-pill-item.active {
+  color: #ff4d4f;
+  font-weight: 600;
+}
+
+.tracker-pill-item.done {
+  color: #22c55e;
+}
+
+/* Reassurance Banner */
+.tracker-reassurance-banner {
+  background: linear-gradient(135deg, rgba(237, 28, 36, 0.08) 0%, rgba(15, 23, 42, 0.7) 100%);
+  border: 1px solid rgba(237, 28, 36, 0.25);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.tracker-reassurance-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.tracker-reassurance-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(237, 28, 36, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4d4f;
+  flex-shrink: 0;
+}
+
+.tracker-reassurance-text h5 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.2rem 0;
+}
+
+.tracker-reassurance-text p {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.tracker-reassurance-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tracker-notif-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: #4ade80;
+}
+
+/* Main Grid: Timeline + Bundle Summary */
+.tracker-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 410px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .tracker-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Timeline Layout */
+.timeline-card {
+  background: rgba(18, 22, 32, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.timeline-header-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timeline-stages-wrapper {
+  position: relative;
+  padding-left: 2rem;
+}
+
+/* Continuous Vertical Connector Line */
+.timeline-track-line {
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 36px;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.timeline-track-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #22c55e 0%, #22c55e 40%, #ED1C24 85%, #ff4d4f 100%);
+  border-radius: 2px;
+  transition: height 0.6s ease;
+  box-shadow: 0 0 10px rgba(237, 28, 36, 0.45);
+}
+
+/* Individual Stage */
+.stage-item {
+  position: relative;
+  margin-bottom: 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  z-index: 2;
+}
+
+.stage-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Stage Node / Icon */
+.stage-node {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #0f141f;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  color: #64748b;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Stage: Completed */
+.stage-item.stage-completed .stage-node {
+  background: #0d2818;
+  border-color: #22c55e;
+  color: #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+}
+
+/* Stage: Current (PULSING) */
+.stage-item.stage-current .stage-node {
+  background: #2a0b0d;
+  border-color: #ED1C24;
+  color: #ff4d4f;
+  box-shadow: 0 0 18px rgba(237, 28, 36, 0.55);
+  animation: stagePulse 2.2s infinite;
+}
+
+@keyframes stagePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(237, 28, 36, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(237, 28, 36, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(237, 28, 36, 0);
+  }
+}
+
+/* Stage: Pending */
+.stage-item.stage-pending .stage-node {
+  background: #0d111a;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #475569;
+}
+
+/* Stage Content Box */
+.stage-content {
+  flex: 1;
+  background: rgba(22, 27, 38, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.15rem 1.35rem;
+  transition: all 0.25s ease;
+}
+
+.stage-item.stage-current .stage-content {
+  background: rgba(30, 16, 22, 0.45);
+  border-color: rgba(237, 28, 36, 0.35);
+  box-shadow: 0 4px 20px rgba(237, 28, 36, 0.12);
+}
+
+.stage-item.stage-completed .stage-content {
+  border-color: rgba(34, 197, 94, 0.15);
+}
+
+.stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stage-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stage-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.stage-status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.stage-completed .stage-status-badge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.stage-current .stage-status-badge {
+  background: rgba(237, 28, 36, 0.18);
+  color: #ff4d4f;
+  border: 1px solid rgba(237, 28, 36, 0.4);
+}
+
+.stage-pending .stage-status-badge {
+  background: rgba(148, 163, 184, 0.08);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.stage-date {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.stage-description {
+  font-size: 0.86rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0.35rem 0 0 0;
+}
+
+/* Current Stage Special Details */
+.stage-live-card {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(10, 12, 18, 0.6);
+  border: 1px dashed rgba(237, 28, 36, 0.3);
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
+
+.stage-live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.stage-live-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-live-label {
+  font-size: 0.72rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stage-live-val {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.stage-actions-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.stage-action-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.stage-action-btn:hover {
+  background: rgba(237, 28, 36, 0.15);
+  border-color: rgba(237, 28, 36, 0.4);
+  color: #ff4d4f;
+}
+
+/* Sidebar / Bundle Summary */
+.tracker-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.bundle-card {
+  background: rgba(18, 22, 32, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.bundle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bundle-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.bundle-biz-info {
+  margin-bottom: 1.25rem;
+  padding: 0.85rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.bundle-biz-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.25rem 0;
+}
+
+.bundle-biz-meta {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bundle-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.bundle-product-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.bundle-product-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bundle-product-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: rgba(237, 28, 36, 0.12);
+  color: #ff4d4f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.bundle-product-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.bundle-product-sub {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.bundle-product-price {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: right;
+}
+
+.bundle-totals {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bundle-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.bundle-total-row.grand {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.bundle-total-row.grand span:last-child {
+  color: #ff4d4f;
+}
+
+/* Activation SLA Prominent Card */
+.activation-sla-card {
+  background: linear-gradient(135deg, rgba(237, 28, 36, 0.15) 0%, rgba(18, 22, 32, 0.8) 100%);
+  border: 1px solid rgba(237, 28, 36, 0.4);
+  border-radius: 14px;
+  padding: 1.25rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sla-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ff7875;
+  margin-bottom: 0.35rem;
+}
+
+.sla-date-highlight {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.sla-sub {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  margin: 0;
+}
+
+/* Concierge Card */
+.concierge-card {
+  background: rgba(18, 22, 32, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.concierge-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ED1C24, #b91c1c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.concierge-info h5 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.15rem 0;
+}
+
+.concierge-info p {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.concierge-info .concierge-contact {
+  font-size: 0.75rem;
+  color: #38bdf8;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* Simulation Pill Bar (For Demo & Hackathon Judges) */
+.tracker-demo-controls {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.demo-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.demo-buttons {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.demo-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-btn:hover,
+.demo-btn.active {
+  background: #ED1C24;
+  border-color: #ED1C24;
+  color: #ffffff;
+}
+
+/* Modal for Reschedule */
+.tracker-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.tracker-modal {
+  background: #141824;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.tracker-modal h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.tracker-modal p {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  margin: 0 0 1.25rem 0;
+}
+
+.tracker-slot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.tracker-slot-btn {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.tracker-slot-btn:hover,
+.tracker-slot-btn.selected {
+  background: rgba(237, 28, 36, 0.15);
+  border-color: #ED1C24;
+  color: #ffffff;
+}
+
+.tracker-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.tracker-modal-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tracker-modal-confirm {
+  background: #ED1C24;
+  border: none;
+  color: #ffffff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}

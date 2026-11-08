@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Udyam Digital — Solution Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0a0a0f;--surface:rgba(255,255,255,.04);--surface2:rgba(255,255,255,.07);
+    --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+    --red:#ED1C24;--red-glow:rgba(237,28,36,.25);--red-subtle:rgba(237,28,36,.12);
+    --text:#e8e8ef;--text2:rgba(255,255,255,.55);--text3:rgba(255,255,255,.35);
+    --green:#00c853;--blue:#448aff;--purple:#b388ff;--orange:#ff9100;--cyan:#00e5ff;
+    --yellow:#ffd600;
+    --glass:rgba(255,255,255,.03);--glass-border:rgba(255,255,255,.06);
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+    line-height:1.6;overflow-x:hidden;min-height:100vh}
+
+  /* Ambient background */
+  body::before{content:'';position:fixed;top:-40%;left:-20%;width:80vw;height:80vw;
+    background:radial-gradient(circle,rgba(237,28,36,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+  body::after{content:'';position:fixed;bottom:-40%;right:-20%;width:70vw;height:70vw;
+    background:radial-gradient(circle,rgba(68,138,255,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+  .container{max-width:1400px;margin:0 auto;padding:40px 32px;position:relative;z-index:1}
+
+  /* Header */
+  .header{text-align:center;margin-bottom:64px;padding:48px 0 32px}
+  .header-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 18px;
+    background:var(--red-subtle);border:1px solid rgba(237,28,36,.2);border-radius:100px;
+    font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:20px}
+  .header h1{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-1.5px;
+    background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.7) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+  .header h1 span{background:linear-gradient(135deg,var(--red),#ff6b6b);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .header p{font-size:18px;color:var(--text2);max-width:700px;margin:0 auto;font-weight:300}
+
+  /* Section titles */
+  .section{margin-bottom:80px}
+  .section-title{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-0.5px}
+  .section-title .accent{color:var(--red)}
+  .section-subtitle{font-size:14px;color:var(--text2);margin-bottom:40px;font-weight:400}
+
+  /* ═══════════════════════════════════════════════
+     ARCHITECTURE DIAGRAM
+  ═══════════════════════════════════════════════ */
+  .arch-diagram{display:flex;flex-direction:column;gap:0;position:relative}
+
+  /* Layer */
+  .arch-layer{position:relative;padding:28px 32px 24px;border-radius:16px;margin-bottom:32px;
+    border:1px solid var(--border)}
+  .arch-layer::before{content:attr(data-label);position:absolute;top:-13px;left:28px;
+    padding:3px 14px;border-radius:6px;font-size:11px;font-weight:700;
+    letter-spacing:1px;text-transform:uppercase;border:1px solid}
+  .layer-frontend{background:linear-gradient(135deg,rgba(237,28,36,.06),rgba(237,28,36,.02))}
+  .layer-frontend::before{background:rgba(237,28,36,.15);border-color:rgba(237,28,36,.3);color:var(--red)}
+  .layer-api{background:linear-gradient(135deg,rgba(68,138,255,.06),rgba(68,138,255,.02))}
+  .layer-api::before{background:rgba(68,138,255,.15);border-color:rgba(68,138,255,.3);color:var(--blue)}
+  .layer-data{background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(0,229,255,.02))}
+  .layer-data::before{background:rgba(0,229,255,.15);border-color:rgba(0,229,255,.3);color:var(--cyan)}
+  .layer-integration{background:linear-gradient(135deg,rgba(179,136,255,.06),rgba(179,136,255,.02))}
+  .layer-integration::before{background:rgba(179,136,255,.15);border-color:rgba(179,136,255,.3);color:var(--purple)}
+  .layer-security{background:linear-gradient(135deg,rgba(0,200,83,.06),rgba(0,200,83,.02))}
+  .layer-security::before{background:rgba(0,200,83,.15);border-color:rgba(0,200,83,.3);color:var(--green)}
+
+  .layer-boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:8px}
+  .arch-box{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;
+    padding:20px;text-align:center;transition:all .3s ease;position:relative;overflow:hidden}
+  .arch-box:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.2);
+    box-shadow:0 12px 40px rgba(0,0,0,.3)}
+  .arch-box .icon{font-size:28px;margin-bottom:10px;display:block}
+  .arch-box .title{font-size:14px;font-weight:600;margin-bottom:4px;color:#fff}
+  .arch-box .desc{font-size:11px;color:var(--text3);line-height:1.4}
+
+  /* Connector arrows between layers */
+  .connector{display:flex;justify-content:center;align-items:center;height:32px;position:relative}
+  .connector::before{content:'';width:2px;height:100%;background:linear-gradient(180deg,var(--border2),var(--text3));position:absolute}
+  .connector::after{content:'';width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;
+    border-top:8px solid var(--text3);position:absolute;bottom:0}
+
+  /* Multi-connectors */
+  .multi-connector{display:flex;justify-content:center;gap:80px;height:32px;position:relative}
+  .multi-connector .conn{position:relative;width:2px;height:100%;background:linear-gradient(180deg,var(--border2),var(--text3))}
+  .multi-connector .conn::after{content:'';width:0;height:0;border-left:6px solid transparent;
+    border-right:6px solid transparent;border-top:7px solid var(--text3);position:absolute;bottom:0;left:-5px}
+
+  /* ═══════════════════════════════════════════════
+     DATA FLOW DIAGRAMS
+  ═══════════════════════════════════════════════ */
+  .flow-diagram{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:0;padding:32px 0}
+  .flow-step{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;flex:0 0 auto}
+  .flow-node{min-width:140px;max-width:180px;padding:16px 18px;border-radius:14px;
+    border:1px solid var(--border2);background:var(--surface2);position:relative;transition:all .3s ease}
+  .flow-node:hover{border-color:rgba(237,28,36,.35);box-shadow:0 0 25px var(--red-glow)}
+  .flow-node .step-num{position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+    background:var(--red);color:#fff;font-size:10px;font-weight:700;width:22px;height:22px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .flow-node .step-icon{font-size:24px;margin-bottom:6px}
+  .flow-node .step-title{font-size:12px;font-weight:600;color:#fff;margin-bottom:2px}
+  .flow-node .step-desc{font-size:10px;color:var(--text3);line-height:1.3}
+
+  .flow-arrow{display:flex;align-items:center;justify-content:center;width:48px;flex-shrink:0;
+    color:var(--text3);font-size:20px;padding-top:6px}
+  .flow-arrow::before{content:'→';font-weight:300;font-size:24px}
+
+  /* Vertical flow for KYC pipeline */
+  .flow-vertical{display:flex;flex-direction:column;align-items:center;gap:0;padding:20px 0}
+  .flow-vertical .flow-step{flex-direction:row;gap:0}
+  .flow-v-arrow{display:flex;align-items:center;justify-content:center;height:36px;
+    color:var(--text3);font-size:18px}
+  .flow-v-arrow::before{content:'↓';font-weight:300;font-size:24px}
+
+  /* Flow container */
+  .flow-container{background:var(--surface);border:1px solid var(--border);border-radius:20px;
+    padding:36px 28px;margin-bottom:40px;overflow-x:auto}
+  .flow-title{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  .flow-title .badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:6px;
+    background:var(--red-subtle);color:var(--red);letter-spacing:.5px;text-transform:uppercase}
+  .flow-desc{font-size:13px;color:var(--text2);margin-bottom:24px}
+
+  /* ═══════════════════════════════════════════════
+     TECH STACK
+  ═══════════════════════════════════════════════ */
+  .tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+  .tech-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:28px;transition:all .3s ease}
+  .tech-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+  .tech-card .tech-icon{font-size:32px;margin-bottom:14px}
+  .tech-card h3{font-size:16px;font-weight:700;margin-bottom:6px;color:#fff}
+  .tech-card ul{list-style:none;padding:0}
+  .tech-card li{font-size:13px;color:var(--text2);padding:5px 0;display:flex;align-items:center;gap:8px}
+  .tech-card li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0}
+
+  /* ═══════════════════════════════════════════════
+     STATS BAR
+  ═══════════════════════════════════════════════ */
+  .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:64px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center}
+  .stat .val{font-size:32px;font-weight:800;color:var(--red);letter-spacing:-1px}
+  .stat .label{font-size:12px;color:var(--text2);margin-top:4px;font-weight:500}
+
+  /* Footer */
+  .footer{text-align:center;padding:48px 0 32px;border-top:1px solid var(--border);margin-top:40px}
+  .footer p{font-size:13px;color:var(--text3)}
+  .footer .brand{color:var(--red);font-weight:700}
+
+  /* Responsive */
+  @media(max-width:768px){
+    .container{padding:20px 16px}
+    .layer-boxes{grid-template-columns:1fr 1fr}
+    .flow-diagram{flex-direction:column;align-items:center}
+    .flow-arrow{width:auto;height:36px;transform:rotate(90deg)}
+    .tech-grid{grid-template-columns:1fr}
+    .stats-bar{grid-template-columns:1fr 1fr}
+  }
+
+  /* Print styles */
+  @media print{
+    body{background:#fff;color:#111}
+    .arch-box,.flow-node,.tech-card,.stat,.flow-container{border-color:#ddd!important;background:#f9f9f9!important}
+    .arch-box .title,.flow-node .step-title,.tech-card h3{color:#111!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-badge">
+      <span>●</span> Airtel SYNC Hackathon 2026
+    </div>
+    <h1>Solution <span>Architecture</span></h1>
+    <p>Udyam Digital — End-to-end digital acquisition platform for MSME customers, built with modern web technologies and privacy-first design.</p>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><div class="val">25</div><div class="label">Product Catalogue</div></div>
+    <div class="stat"><div class="val">3,534</div><div class="label">GSTIN Records</div></div>
+    <div class="stat"><div class="val">2,723</div><div class="label">Udyam Records</div></div>
+    <div class="stat"><div class="val">5,000</div><div class="label">Lead Analytics</div></div>
+    <div class="stat"><div class="val">4</div><div class="label">Core Modules</div></div>
+    <div class="stat"><div class="val">100%</div><div class="label">DPDP Compliant</div></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 1: ARCHITECTURE DIAGRAM
+  ═══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-title">System <span class="accent">Architecture</span></div>
+    <div class="section-subtitle">Five-layer architecture powering the Udyam Digital platform</div>
+
+    <div class="arch-diagram">
+
+      <!-- LAYER 1: Frontend -->
+      <div class="arch-layer layer-frontend" data-label="Frontend Layer">
+        <div class="layer-boxes">
+          <div class="arch-box">
+            <span class="icon">💬</span>
+            <div class="title">Business Advisor</div>
+            <div class="desc">Conversational AI that profiles MSMEs and recommends tailored bundles</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">📋</span>
+            <div class="title">Quote Builder</div>
+            <div class="desc">Interactive bundle customizer with real-time pricing and comparison</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🔐</span>
+            <div class="title">KYC Verification</div>
+            <div class="desc">GSTIN & Udyam validation with document upload and OCR extraction</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">📡</span>
+            <div class="title">Order Tracker</div>
+            <div class="desc">Real-time activation tracking with milestone timeline view</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <!-- LAYER 2: API / Logic -->
+      <div class="arch-layer layer-api" data-label="API / Logic Layer">
+        <div class="layer-boxes">
+          <div class="arch-box">
+            <span class="icon">🧠</span>
+            <div class="title">Advisor Engine</div>
+            <div class="desc">Rule-based recommendation with segment detection and propensity scoring</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">✅</span>
+            <div class="title">Product Eligibility</div>
+            <div class="desc">Filters products by segment, size, and regulatory requirements</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🔍</span>
+            <div class="title">GSTIN / Udyam Validators</div>
+            <div class="desc">Checksum validation, format verification, and registry cross-reference</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">💰</span>
+            <div class="title">Bundle Calculator</div>
+            <div class="desc">Dynamic pricing engine with volume discounts and bundle savings logic</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <!-- LAYER 3: Data -->
+      <div class="arch-layer layer-data" data-label="Data Layer">
+        <div class="layer-boxes">
+          <div class="arch-box">
+            <span class="icon">📦</span>
+            <div class="title">Product Catalogue</div>
+            <div class="desc">25 products across connectivity, communication, cloud & security categories</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🏢</span>
+            <div class="title">GSTIN Registry</div>
+            <div class="desc">3,534 verified business records with trade name, state & status data</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">📜</span>
+            <div class="title">Udyam Registry</div>
+            <div class="desc">2,723 MSME records with classification, NIC codes & activity data</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">📊</span>
+            <div class="title">Lead Analytics</div>
+            <div class="desc">5,000 lead records with conversion funnels, stages & timing metrics</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <!-- LAYER 4: Integration -->
+      <div class="arch-layer layer-integration" data-label="Integration Layer">
+        <div class="layer-boxes">
+          <div class="arch-box">
+            <span class="icon">🌐</span>
+            <div class="title">Mock GSTIN API</div>
+            <div class="desc">Simulated government API with realistic latency and response patterns</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🏭</span>
+            <div class="title">Mock Udyam API</div>
+            <div class="desc">MSME registration verification with enterprise classification lookup</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">📷</span>
+            <div class="title">Document OCR</div>
+            <div class="desc">Simulated optical character recognition for business document extraction</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🛒</span>
+            <div class="title">Order Management</div>
+            <div class="desc">End-to-end order lifecycle with status tracking and SLA monitoring</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"></div>
+
+      <!-- LAYER 5: Security -->
+      <div class="arch-layer layer-security" data-label="Security & Compliance">
+        <div class="layer-boxes">
+          <div class="arch-box">
+            <span class="icon">🛡️</span>
+            <div class="title">DPDP Act 2023</div>
+            <div class="desc">Full compliance with India's Digital Personal Data Protection Act framework</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">✋</span>
+            <div class="title">Consent Management</div>
+            <div class="desc">Granular consent collection, storage, and withdrawal mechanisms</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🎭</span>
+            <div class="title">Data Masking</div>
+            <div class="desc">PII masking for GSTIN, Aadhaar, PAN with configurable display rules</div>
+          </div>
+          <div class="arch-box">
+            <span class="icon">🔒</span>
+            <div class="title">Encryption</div>
+            <div class="desc">Client-side data protection with secure session and identifier handling</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 2: DATA FLOW DIAGRAMS
+  ═══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-title">Data <span class="accent">Flow</span> Diagrams</div>
+    <div class="section-subtitle">How data moves through the Udyam Digital platform</div>
+
+    <!-- Flow 1: Customer Journey -->
+    <div class="flow-container">
+      <div class="flow-title">
+        Customer Journey Flow
+        <span class="badge">End-to-End</span>
+      </div>
+      <div class="flow-desc">Complete acquisition journey from landing to activation — designed to complete in under 7 days vs. industry average of 17.6 days.</div>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">1</div>
+            <div class="step-icon">🏠</div>
+            <div class="step-title">Landing Page</div>
+            <div class="step-desc">MSME arrives via digital channel or field referral</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">2</div>
+            <div class="step-icon">💬</div>
+            <div class="step-title">Advisor Chat</div>
+            <div class="step-desc">AI profiles business type, size, and needs</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">3</div>
+            <div class="step-icon">📦</div>
+            <div class="step-title">Bundle Recommendation</div>
+            <div class="step-desc">Segment-specific products assembled with pricing</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">4</div>
+            <div class="step-icon">📋</div>
+            <div class="step-title">Quote Builder</div>
+            <div class="step-desc">Customer customizes, compares, and finalizes quote</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">5</div>
+            <div class="step-icon">🔐</div>
+            <div class="step-title">KYC Verification</div>
+            <div class="step-desc">GSTIN/Udyam instant lookup with doc OCR</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">6</div>
+            <div class="step-icon">📡</div>
+            <div class="step-title">Order Tracking</div>
+            <div class="step-desc">Self-service milestone view with live updates</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node" style="border-color:rgba(0,200,83,.35);box-shadow:0 0 20px rgba(0,200,83,.15)">
+            <div class="step-num" style="background:var(--green)">7</div>
+            <div class="step-icon">✅</div>
+            <div class="step-title">Activation</div>
+            <div class="step-desc">Services live, single bill, single support number</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 2: KYC Pipeline -->
+    <div class="flow-container">
+      <div class="flow-title">
+        KYC Verification Pipeline
+        <span class="badge">Verification</span>
+      </div>
+      <div class="flow-desc">Automated verification pipeline that replaces manual document collection — reducing KYC time from days to minutes.</div>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">1</div>
+            <div class="step-icon">📄</div>
+            <div class="step-title">Document Upload</div>
+            <div class="step-desc">GSTIN cert, Udyam cert, or PAN card upload</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">2</div>
+            <div class="step-icon">🔬</div>
+            <div class="step-title">OCR Extraction</div>
+            <div class="step-desc">Auto-extract registration numbers, names, addresses</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">3</div>
+            <div class="step-icon">🔗</div>
+            <div class="step-title">Registry Cross-check</div>
+            <div class="step-desc">Validate against 3,534 GSTIN & 2,723 Udyam records</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">4</div>
+            <div class="step-icon">⚙️</div>
+            <div class="step-title">Validation Engine</div>
+            <div class="step-desc">Checksum verify, format check, status confirm</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node" style="border-color:rgba(0,200,83,.35);box-shadow:0 0 20px rgba(0,200,83,.15)">
+            <div class="step-num" style="background:var(--green)">5</div>
+            <div class="step-icon">✅</div>
+            <div class="step-title">KYC Approved</div>
+            <div class="step-desc">Business verified, proceed to order placement</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 3: Advisor Recommendation -->
+    <div class="flow-container">
+      <div class="flow-title">
+        Advisor Recommendation Engine
+        <span class="badge">Intelligence</span>
+      </div>
+      <div class="flow-desc">How the AI Business Advisor transforms basic business inputs into a personalized, segment-optimized product bundle.</div>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">1</div>
+            <div class="step-icon">📝</div>
+            <div class="step-title">Business Profile</div>
+            <div class="step-desc">Industry, employee count, revenue, current setup</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">2</div>
+            <div class="step-icon">🎯</div>
+            <div class="step-title">Segment Detection</div>
+            <div class="step-desc">Classify into Micro, Professional, Multi-site, Mfg</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">3</div>
+            <div class="step-icon">🔍</div>
+            <div class="step-title">Eligibility Filter</div>
+            <div class="step-desc">Match against 25 products based on segment rules</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node">
+            <div class="step-num">4</div>
+            <div class="step-icon">📦</div>
+            <div class="step-title">Bundle Assembly</div>
+            <div class="step-desc">Compose starter bundle with core + recommended add-ons</div>
+          </div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-node" style="border-color:rgba(237,28,36,.35);box-shadow:0 0 20px var(--red-glow)">
+            <div class="step-num">5</div>
+            <div class="step-icon">💰</div>
+            <div class="step-title">Pricing Calculation</div>
+            <div class="step-desc">Apply volume discounts, bundle savings, show TCO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 3: TECHNOLOGY STACK
+  ═══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-title">Technology <span class="accent">Stack</span></div>
+    <div class="section-subtitle">Modern, lightweight, and production-ready technologies</div>
+
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-icon">⚛️</div>
+        <h3>Frontend Framework</h3>
+        <ul>
+          <li>React 19 with functional components & hooks</li>
+          <li>Vite 6 for lightning-fast dev and builds</li>
+          <li>React Router v7 for client-side navigation</li>
+          <li>100% vanilla CSS — zero framework dependency</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🎨</div>
+        <h3>Design System</h3>
+        <ul>
+          <li>Custom glassmorphism design language</li>
+          <li>Dark-mode first with Airtel Red accents</li>
+          <li>Responsive grid with fluid typography</li>
+          <li>CSS animations (no JS animation libraries)</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🗄️</div>
+        <h3>Data & APIs</h3>
+        <ul>
+          <li>JSON-based mock APIs from converted CSVs</li>
+          <li>3,534 GSTIN + 2,723 Udyam real-structure records</li>
+          <li>5,000 lead analytics records with funnel data</li>
+          <li>25-product catalogue with segment mapping</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">✅</div>
+        <h3>Validation Logic</h3>
+        <ul>
+          <li>Custom GSTIN checksum algorithm (Luhn mod-36)</li>
+          <li>Udyam format validator with state code checks</li>
+          <li>Real-time field validation with error messages</li>
+          <li>Multi-step form validation with progress tracking</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🛡️</div>
+        <h3>Privacy & Compliance</h3>
+        <ul>
+          <li>DPDP Act 2023 compliant consent flows</li>
+          <li>Granular consent with purpose limitation</li>
+          <li>PII masking (GSTIN: 22AAAAA****A1Z5)</li>
+          <li>Client-side data protection and secure sessions</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🚀</div>
+        <h3>Performance</h3>
+        <ul>
+          <li>Single-page app with lazy-loaded routes</li>
+          <li>Optimistic UI updates for instant feedback</li>
+          <li>Debounced search and throttled API calls</li>
+          <li>CSS-only animations for 60fps smoothness</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Built for <span class="brand">Airtel</span> SYNC Hackathon — Project Udyam Digital</p>
+    <p style="margin-top:8px;font-size:11px;color:var(--text3)">Solution Architecture Document v1.0</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

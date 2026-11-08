@@ -1,0 +1,95 @@
+{
+  "total_leads": 5000,
+  "funnel": [
+    {
+      "stage": "Lead",
+      "count": 5000
+    },
+    {
+      "stage": "Contacted",
+      "count": 3406
+    },
+    {
+      "stage": "Needs assessed",
+      "count": 1974
+    },
+    {
+      "stage": "Quote accepted",
+      "count": 861
+    },
+    {
+      "stage": "KYC complete",
+      "count": 588
+    },
+    {
+      "stage": "Activated",
+      "count": 368
+    }
+  ],
+  "outcome": {
+    "Dropped": 4632,
+    "Activated": 368
+  },
+  "drop_reasons": {
+    "Unreachable after 3 attempts": 805,
+    "Owner had no time for a visit": 531,
+    "Not interested on first call": 470,
+    "Price too high": 414,
+    "Locked in with current provider": 325,
+    "Wrong or invalid number": 319,
+    "Visit not scheduled by sales": 296,
+    "Only wanted a mobile plan": 280,
+    "Competitor offered cheaper plan": 207,
+    "Quote too complex to understand": 206
+  },
+  "segments": {
+    "Professional offices": {
+      "total": 1247,
+      "activated": 138,
+      "rate": 11.1
+    },
+    "Micro retail & services": {
+      "total": 2709,
+      "activated": 110,
+      "rate": 4.1
+    },
+    "Small multi-site businesses": {
+      "total": 755,
+      "activated": 83,
+      "rate": 11.0
+    },
+    "Small manufacturers": {
+      "total": 289,
+      "activated": 37,
+      "rate": 12.8
+    }
+  },
+  "sources": {
+    "Field sales": 1720,
+    "Website form": 995,
+    "Channel partner": 1010,
+    "WhatsApp campaign": 358,
+    "Referral": 413,
+    "Inbound call": 504
+  },
+  "activated_stats": {
+    "count": 368,
+    "avg_days_to_activation": 17.6,
+    "avg_follow_up_calls": 3.0,
+    "avg_monthly_bundle_value": 12351.0,
+    "avg_acquisition_cost": 1108.0,
+    "churn_rate_6m": 15.2
+  },
+  "gstin_impact": {
+    "with_gstin": {
+      "total": 3534,
+      "activated": 338,
+      "rate": 9.6
+    },
+    "without_gstin": {
+      "total": 1466,
+      "activated": 30,
+      "rate": 2.0
+    }
+  }
+}
